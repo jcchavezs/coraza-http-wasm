@@ -22,7 +22,7 @@ jobs:
         with:
           go-version: v1.18.x
           cache: true
-      - name: Run tests
-        run: make test
       - name: Build binary
         run: make build
+      - name: Run e2e tests
+        run: make e2e
