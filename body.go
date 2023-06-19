@@ -1,13 +1,17 @@
 package main
 
-import "io"
+import (
+	"io"
 
-type stdReader struct {
-	reader
+	"github.com/http-wasm/http-wasm-guest-tinygo/handler/api"
+)
+
+type readWriterTo struct {
+	api.Body
 }
 
-func (sr *stdReader) Read(p []byte) (n int, err error) {
-	size, eof := sr.reader.Read(p)
+func (sr readWriterTo) Read(p []byte) (n int, err error) {
+	size, eof := sr.Body.Read(p)
 	if eof {
 		err = io.EOF
 	}
@@ -15,8 +19,12 @@ func (sr *stdReader) Read(p []byte) (n int, err error) {
 	return
 }
 
-var _ io.Reader = &stdReader{}
-
-type reader interface {
-	Read([]byte) (size uint32, eof bool)
+// WriteTo implements io.WriterTo and it is handy for copying the body to the
+// into the transaction buffer.
+func (sr readWriterTo) WriteTo(w io.Writer) (n int64, err error) {
+	size, err := sr.Body.WriteTo(w)
+	return int64(size), err
 }
+
+var _ io.Reader = readWriterTo{}
+var _ io.WriterTo = readWriterTo{}

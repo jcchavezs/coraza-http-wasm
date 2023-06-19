@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"net/http"
 	"strings"
 
 	httpwasm "github.com/http-wasm/http-wasm-guest-tinygo/handler"
@@ -23,7 +24,7 @@ var txs = map[uint32]types.Transaction{}
 // Note: required features does not include api.FeatureTrailers because some
 // hosts don't support them, and the impact is minimal for logging.
 func main() {
-	requiredFeatures := api.FeatureBufferRequest
+	requiredFeatures := api.FeatureBufferRequest | api.FeatureBufferResponse
 	if want, have := requiredFeatures, httpwasm.Host.EnableFeatures(requiredFeatures); !have.IsEnabled(want) {
 		panic("unexpected features, want: " + want.String() + ", have: " + have.String())
 	}
@@ -124,7 +125,7 @@ func handleRequest(req api.Request, res api.Response) (next bool, reqCtx uint32)
 		// We only do body buffering if the transaction requires request
 		// body inspection, otherwise we just let the request follow its
 		// regular flow.
-		it, _, err := tx.ReadRequestBodyFrom(&stdReader{req.Body()})
+		it, _, err := tx.ReadRequestBodyFrom(readWriterTo{req.Body()})
 		if err != nil {
 			return false, 0
 		}
@@ -172,5 +173,65 @@ func obtainStatusCodeFromInterruptionOrDefault(it *types.Interruption, defaultSt
 }
 
 func handleResponse(reqCtx uint32, req api.Request, resp api.Response, isError bool) {
+	tx, ok := txs[reqCtx]
+	if !ok {
+		return
+	}
+	defer func() {
+		// We run phase 5 rules and create audit logs (if enabled)
+		tx.ProcessLogging()
+		// we remove temporary files and free some memory
+		if err := tx.Close(); err != nil {
+			tx.DebugLogger().Error().Err(err).Msg("Failed to close the transaction")
+		}
+	}()
 	delete(txs, reqCtx)
+
+	if isError {
+		return
+	}
+
+	// We look for interruptions triggered at phase 3 (response headers)
+	// and during writing the response body. If so, response status code
+	// has been sent over the flush already.
+	if tx.IsInterrupted() {
+		return
+	}
+
+	for _, h := range resp.Headers().Names() {
+		tx.AddResponseHeader(h, strings.Join(resp.Headers().GetAll(h), ";"))
+	}
+
+	statusCode := resp.GetStatusCode()
+	it := tx.ProcessResponseHeaders(int(statusCode), req.GetProtocolVersion())
+	if it != nil {
+		handleInterruption(it, resp)
+		return
+	}
+
+	it, _, err := tx.ReadResponseBodyFrom(readWriterTo{resp.Body()})
+	if err != nil {
+		tx.DebugLogger().Error().Err(err).Msg("Failed to read response body")
+		resp.SetStatusCode(http.StatusInternalServerError)
+		return
+	}
+	if it != nil {
+		resp.Headers().Set("Content-Length", "0")
+		resp.Body().Write(nil)
+		handleInterruption(it, resp)
+		return
+	}
+
+	if tx.IsResponseBodyAccessible() && tx.IsResponseBodyProcessable() {
+		if it, err := tx.ProcessResponseBody(); err != nil {
+			resp.SetStatusCode(http.StatusInternalServerError)
+			tx.DebugLogger().Error().Err(err).Msg("Failed to process response body")
+			return
+		} else if it != nil {
+			resp.Headers().Set("Content-Length", "0")
+			resp.Body().Write(nil)
+			resp.SetStatusCode(obtainStatusCodeFromInterruptionOrDefault(it, statusCode))
+			return
+		}
+	}
 }
