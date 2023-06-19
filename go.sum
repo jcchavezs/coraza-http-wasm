@@ -5,10 +5,10 @@ github.com/corazawaf/libinjection-go v0.1.2/go.mod h1:OP4TM7xdJ2skyXqNX1AN1wN5nN
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/foxcpp/go-mockdns v1.0.0 h1:7jBqxd3WDWwi/6WhDvacvH1XsN3rOLXyHM1uhvIx6FI=
-github.com/http-wasm/http-wasm-guest-tinygo v0.1.1 h1:7L+MhMNDVsUAqmElG64JEZ0n1yGCKTx0w01N1b08Xhc=
-github.com/http-wasm/http-wasm-guest-tinygo v0.1.1/go.mod h1:roTs1mkyGDe1CUzrL8JUXSbPNYUHnnWKMCG6epmRAZY=
-github.com/http-wasm/http-wasm-host-go v0.4.2 h1:94839hsOFMO/zwIsEGZV2h/nvsG6WJ+/Agh98dZqVxI=
-github.com/http-wasm/http-wasm-host-go v0.4.2/go.mod h1:Z83VkMiDJRBoqTLWCiQoaRK8thbRBDaIVxMT9KSNaP8=
+github.com/http-wasm/http-wasm-guest-tinygo v0.3.0 h1:J11RX1ajUC6fhVtv3ZU5k66SL4EB4DhThHmz4Ilwevw=
+github.com/http-wasm/http-wasm-guest-tinygo v0.3.0/go.mod h1:zcKr7h/t5ha2ZWIMwV4iOqhfC/qno/tNPYgybVkn/MQ=
+github.com/http-wasm/http-wasm-host-go v0.5.1 h1:pdr46nnh/ya5Nj0rmPKrxI/zx5781yG/tix8P17tcFI=
+github.com/http-wasm/http-wasm-host-go v0.5.1/go.mod h1:GslHNHfjfM15UDrxEh/jp9JTreW6xt/zbxQzLkk9YMM=
 github.com/magefile/mage v1.15.0 h1:BvGheCMAsG3bWUDbZ8AyXXpCNwU9u5CB6sM+HNb9HYg=
 github.com/magefile/mage v1.15.0/go.mod h1:z5UZb/iS3GoOSn0JgWuiw7dxlurVYTu+/jHXqQg881A=
 github.com/mccutchen/go-httpbin/v2 v2.8.0 h1:5Ld/mII532zWV6Dn9UpOUZebfD8chkYmx3UIW3VZET8=
@@ -20,8 +20,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/testify v1.8.3 h1:RP3t2pwF7cMEbC1dqtB6poj3niw/9gnV4Cjg5oW5gtY=
 github.com/stretchr/testify v1.8.3/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
-github.com/tetratelabs/wazero v1.1.0 h1:EByoAhC+QcYpwSZJSs/aV0uokxPwBgKxfiokSUwAknQ=
-github.com/tetratelabs/wazero v1.1.0/go.mod h1:wYx2gNRg8/WihJfSDxA1TIL8H+GkfLYm+bIfbblu9VQ=
+github.com/tetratelabs/wazero v1.2.1 h1:J4X2hrGzJvt+wqltuvcSjHQ7ujQxA9gb6PeMs4qlUWs=
+github.com/tetratelabs/wazero v1.2.1/go.mod h1:wYx2gNRg8/WihJfSDxA1TIL8H+GkfLYm+bIfbblu9VQ=
 github.com/tidwall/gjson v1.14.4 h1:uo0p8EbA09J7RQaflQ1aBRffTR7xedD2bcIVSYxLnkM=
 github.com/tidwall/gjson v1.14.4/go.mod h1:/wbyibRr2FHMks5tjHJ5F8dMZh3AcwJEMf5vlfC0lxk=
 github.com/tidwall/match v1.1.1 h1:+Ho715JplO36QYgwN9PGYNhgZvoUSc9X2c80KVTi+GA=

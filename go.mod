@@ -4,11 +4,11 @@ go 1.19
 
 require (
 	github.com/corazawaf/coraza/v3 v3.0.1-0.20230619193221-1b8a0073cd95
-	github.com/http-wasm/http-wasm-guest-tinygo v0.1.1
-	github.com/http-wasm/http-wasm-host-go v0.4.2
+	github.com/http-wasm/http-wasm-guest-tinygo v0.3.0
+	github.com/http-wasm/http-wasm-host-go v0.5.1
 	github.com/mccutchen/go-httpbin/v2 v2.8.0
 	github.com/stretchr/testify v1.8.3
-	github.com/tetratelabs/wazero v1.1.0
+	github.com/tetratelabs/wazero v1.2.1
 )
 
 require (
