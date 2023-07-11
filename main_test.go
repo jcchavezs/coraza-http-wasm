@@ -11,7 +11,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	e2e "github.com/corazawaf/coraza/v3/http/e2e/pkg"
+	"github.com/corazawaf/coraza/v3/http/e2e"
 	"github.com/http-wasm/http-wasm-host-go/handler"
 	nethttp "github.com/http-wasm/http-wasm-host-go/handler/nethttp"
 	"github.com/mccutchen/go-httpbin/v2/httpbin"

@@ -3,10 +3,10 @@ module github.com/corazawaf/coraza-http-wasm
 go 1.19
 
 require (
-	github.com/corazawaf/coraza/v3 v3.0.1-0.20230619193221-1b8a0073cd95
+	github.com/corazawaf/coraza/v3 v3.0.3-0.20230711100255-0dabae31d831
 	github.com/http-wasm/http-wasm-guest-tinygo v0.3.0
 	github.com/http-wasm/http-wasm-host-go v0.5.1
-	github.com/mccutchen/go-httpbin/v2 v2.8.0
+	github.com/mccutchen/go-httpbin/v2 v2.9.0
 	github.com/stretchr/testify v1.8.3
 	github.com/tetratelabs/wazero v1.2.1
 )
@@ -20,7 +20,7 @@ require (
 	github.com/tidwall/gjson v1.14.4 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
-	golang.org/x/net v0.11.0 // indirect
+	golang.org/x/net v0.12.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	rsc.io/binaryregexp v0.2.0 // indirect
 )
