@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -8,6 +9,7 @@ import (
 
 	httpwasm "github.com/http-wasm/http-wasm-guest-tinygo/handler"
 	"github.com/http-wasm/http-wasm-guest-tinygo/handler/api"
+	"github.com/tidwall/gjson"
 
 	"math/rand"
 
@@ -49,14 +51,55 @@ func toHostLevel(lvl debuglog.Level) api.LogLevel {
 	}
 }
 
+func getDirectivesFromHost(host api.Host) (string, error) {
+	if len(host.GetConfig()) == 0 {
+		return "", errors.New("empty config")
+	}
+
+	var directives = strings.Builder{}
+	cfgAsJSON := gjson.ParseBytes(host.GetConfig())
+	if !cfgAsJSON.Exists() {
+		return "", errors.New("invalid host config")
+	}
+
+	directivesResult := cfgAsJSON.Get("directives")
+	if !directivesResult.IsArray() {
+		return "", errors.New("invalid host config, array expected for field directives")
+	}
+
+	isFirst := true
+	directivesResult.ForEach(func(key, value gjson.Result) bool {
+		if isFirst {
+			isFirst = false
+		} else {
+			directives.WriteByte('\n')
+		}
+
+		directives.WriteString(value.Str)
+		return true
+	})
+
+	if directives.Len() == 0 {
+		return "", errors.New("empty directives")
+	}
+
+	return directives.String(), nil
+}
+
 func createWAF(host api.Host) coraza.WAF {
-	wafConfig := coraza.NewWAFConfig().
-		WithDirectives(string(host.GetConfig())).
-		WithDebugLogger(debuglog.DefaultWithPrinterFactory(func(io.Writer) debuglog.Printer {
-			return func(lvl debuglog.Level, message, fields string) {
-				host.Log(toHostLevel(lvl), message+" "+fields)
-			}
-		}))
+	wafConfig := coraza.NewWAFConfig()
+
+	if directives, err := getDirectivesFromHost(host); err == nil {
+		wafConfig = wafConfig.WithDirectives(directives)
+	} else {
+		panic(fmt.Sprintf("failed to initialize WAF: %v", err))
+	}
+
+	wafConfig = wafConfig.WithDebugLogger(debuglog.DefaultWithPrinterFactory(func(io.Writer) debuglog.Printer {
+		return func(lvl debuglog.Level, message, fields string) {
+			host.Log(toHostLevel(lvl), message+" "+fields)
+		}
+	}))
 
 	waf, err := coraza.NewWAF(wafConfig)
 	if err != nil {
