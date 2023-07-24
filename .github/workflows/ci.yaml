@@ -28,5 +28,7 @@ jobs:
           tinygo-version: 0.28.1
       - name: Build binary
         run: make build
+      - name: Run tests
+        run: make test
       - name: Run e2e tests
         run: make e2e
