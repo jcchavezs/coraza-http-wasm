@@ -90,6 +90,7 @@ func createWAF(host api.Host) coraza.WAF {
 	wafConfig := coraza.NewWAFConfig()
 
 	if directives, err := getDirectivesFromHost(host); err == nil {
+		host.Log(api.LogLevelInfo, "Initializing WAF with directives:\n"+directives)
 		wafConfig = wafConfig.WithDirectives(directives)
 	} else {
 		log.Fatalf("Failed to initialize WAF: %s", err.Error())
