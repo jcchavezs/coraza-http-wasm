@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/http-wasm/http-wasm-host-go/api"
 	"github.com/http-wasm/http-wasm-host-go/handler"
 	wasm "github.com/http-wasm/http-wasm-host-go/handler/nethttp"
 )
@@ -26,7 +25,6 @@ func ExampleMain() {
 	h, err := wasm.NewMiddleware(
 		ctx,
 		[]byte(guest),
-		handler.Logger(&api.ConsoleLogger{}),
 		handler.GuestConfig([]byte(`
 		{
 			"directives": [
