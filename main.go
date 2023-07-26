@@ -1,13 +1,15 @@
 package main
 
 import (
-	"fmt"
+	"errors"
 	"io"
+	"log"
 	"net/http"
 	"strings"
 
 	httpwasm "github.com/http-wasm/http-wasm-guest-tinygo/handler"
 	"github.com/http-wasm/http-wasm-guest-tinygo/handler/api"
+	"github.com/tidwall/gjson"
 
 	"math/rand"
 
@@ -26,44 +28,90 @@ var txs = map[uint32]types.Transaction{}
 func main() {
 	requiredFeatures := api.FeatureBufferRequest | api.FeatureBufferResponse
 	if want, have := requiredFeatures, httpwasm.Host.EnableFeatures(requiredFeatures); !have.IsEnabled(want) {
-		panic("unexpected features, want: " + want.String() + ", have: " + have.String())
+		log.Fatal("Unexpected features, want: " + want.String() + ", have: " + have.String())
 	}
 	httpwasm.HandleRequestFn = handleRequest
 	httpwasm.HandleResponseFn = handleResponse
 
-	waf = createWAF(httpwasm.Host)
+	var err error
+	waf, err = initializeWAF(httpwasm.Host)
+	if err != nil {
+		log.Fatalf("Failed to initialize WAF: %v", err)
+	}
 }
 
 func toHostLevel(lvl debuglog.Level) api.LogLevel {
 	switch lvl {
+	case debuglog.LevelNoLog:
+		return api.LogLevelNone
 	case debuglog.LevelError:
 		return api.LogLevelError
 	case debuglog.LevelWarn:
 		return api.LogLevelWarn
 	case debuglog.LevelInfo:
 		return api.LogLevelInfo
-	case debuglog.LevelDebug:
-		return api.LogLevelDebug
 	default:
-		return api.LogLevelNone
+		return api.LogLevelDebug
 	}
 }
 
-func createWAF(host api.Host) coraza.WAF {
-	wafConfig := coraza.NewWAFConfig().
-		WithDirectives(string(host.GetConfig())).
-		WithDebugLogger(debuglog.DefaultWithPrinterFactory(func(io.Writer) debuglog.Printer {
-			return func(lvl debuglog.Level, message, fields string) {
-				host.Log(toHostLevel(lvl), message+" "+fields)
-			}
-		}))
+func getDirectivesFromHost(host api.Host) (string, error) {
+	if len(host.GetConfig()) == 0 {
+		return "", errors.New("empty config")
+	}
+
+	var directives = strings.Builder{}
+	cfgAsJSON := gjson.ParseBytes(host.GetConfig())
+	if !cfgAsJSON.Exists() {
+		return "", errors.New("invalid host config")
+	}
+
+	directivesResult := cfgAsJSON.Get("directives")
+	if !directivesResult.IsArray() {
+		return "", errors.New("invalid host config, array expected for field directives")
+	}
+
+	isFirst := true
+	directivesResult.ForEach(func(key, value gjson.Result) bool {
+		if isFirst {
+			isFirst = false
+		} else {
+			directives.WriteByte('\n')
+		}
+
+		directives.WriteString(value.Str)
+		return true
+	})
+
+	if directives.Len() == 0 {
+		return "", errors.New("empty directives")
+	}
+
+	return directives.String(), nil
+}
+
+func initializeWAF(host api.Host) (coraza.WAF, error) {
+	wafConfig := coraza.NewWAFConfig()
+
+	if directives, err := getDirectivesFromHost(host); err == nil {
+		host.Log(api.LogLevelInfo, "Initializing WAF with directives:\n"+directives)
+		wafConfig = wafConfig.WithDirectives(directives)
+	} else {
+		return nil, err
+	}
+
+	wafConfig = wafConfig.WithDebugLogger(debuglog.DefaultWithPrinterFactory(func(io.Writer) debuglog.Printer {
+		return func(lvl debuglog.Level, message, fields string) {
+			host.Log(toHostLevel(lvl), message+" "+fields)
+		}
+	}))
 
 	waf, err := coraza.NewWAF(wafConfig)
 	if err != nil {
-		panic(fmt.Sprintf("failed to initialize WAF: %v", err))
+		return nil, err
 	}
 
-	return waf
+	return waf, nil
 }
 
 func handleRequest(req api.Request, res api.Response) (next bool, reqCtx uint32) {
