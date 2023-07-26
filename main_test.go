@@ -70,8 +70,8 @@ func TestGetDirectivesFromHost(t *testing.T) {
 	})
 }
 
-func TestCreateWAF(t *testing.T) {
-	createWAF(mockAPIHost{t: t, getConfig: func() []byte {
+func TestInitializeWAF(t *testing.T) {
+	_, err := initializeWAF(mockAPIHost{t: t, getConfig: func() []byte {
 		return []byte(`
 		{
 			"directives": [
@@ -82,4 +82,5 @@ func TestCreateWAF(t *testing.T) {
 			]
 		}`)
 	}})
+	require.NoError(t, err)
 }

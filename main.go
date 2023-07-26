@@ -28,12 +28,16 @@ var txs = map[uint32]types.Transaction{}
 func main() {
 	requiredFeatures := api.FeatureBufferRequest | api.FeatureBufferResponse
 	if want, have := requiredFeatures, httpwasm.Host.EnableFeatures(requiredFeatures); !have.IsEnabled(want) {
-		log.Fatal("unexpected features, want: " + want.String() + ", have: " + have.String())
+		log.Fatal("Unexpected features, want: " + want.String() + ", have: " + have.String())
 	}
 	httpwasm.HandleRequestFn = handleRequest
 	httpwasm.HandleResponseFn = handleResponse
 
-	waf = createWAF(httpwasm.Host)
+	var err error
+	waf, err = initializeWAF(httpwasm.Host)
+	if err != nil {
+		log.Fatalf("Failed to initialize WAF: %v", err)
+	}
 }
 
 func toHostLevel(lvl debuglog.Level) api.LogLevel {
@@ -86,14 +90,14 @@ func getDirectivesFromHost(host api.Host) (string, error) {
 	return directives.String(), nil
 }
 
-func createWAF(host api.Host) coraza.WAF {
+func initializeWAF(host api.Host) (coraza.WAF, error) {
 	wafConfig := coraza.NewWAFConfig()
 
 	if directives, err := getDirectivesFromHost(host); err == nil {
 		host.Log(api.LogLevelInfo, "Initializing WAF with directives:\n"+directives)
 		wafConfig = wafConfig.WithDirectives(directives)
 	} else {
-		log.Fatalf("Failed to initialize WAF: %s", err.Error())
+		return nil, err
 	}
 
 	wafConfig = wafConfig.WithDebugLogger(debuglog.DefaultWithPrinterFactory(func(io.Writer) debuglog.Printer {
@@ -104,10 +108,10 @@ func createWAF(host api.Host) coraza.WAF {
 
 	waf, err := coraza.NewWAF(wafConfig)
 	if err != nil {
-		log.Fatalf("Failed to initialize WAF: %s", err.Error())
+		return nil, err
 	}
 
-	return waf
+	return waf, nil
 }
 
 func handleRequest(req api.Request, res api.Response) (next bool, reqCtx uint32) {
