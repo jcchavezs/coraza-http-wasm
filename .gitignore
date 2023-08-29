@@ -11,6 +11,9 @@
 # Test binary, built with `go test -c`
 *.test
 
+# Envoy binary
+envoy/envoybin/*
+
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
@@ -21,3 +24,5 @@
 go.work
 
 build
+
+

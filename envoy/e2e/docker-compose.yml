@@ -1,0 +1,28 @@
+services:
+  httpbin:
+    image: mccutchen/go-httpbin:v2.9.0
+    command: [ "/bin/go-httpbin", "-port", "8000" ]
+    ports:
+      - 8000:8000
+  envoy:
+    depends_on:
+      - httpbin
+    image: ubuntu:22.04
+    entrypoint: /envoybin/envoy
+    command:
+      - -c
+      - ${ENVOY_CONFIG:-/conf/e2e-config.yaml}
+      - --log-level
+      - info
+      - --component-log-level
+      - wasm:debug
+      - --log-format [%Y-%m-%d %T.%f][%t][%l][%n] [%g:%#] %v
+      - --concurrency 1
+      - --log-path
+      - /home/envoy.log
+    volumes:
+      - ../envoybin:/envoybin
+      - ../../build:/build
+      - .:/conf
+    ports:
+      - 8080:8080

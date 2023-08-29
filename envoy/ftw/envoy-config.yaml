@@ -1,0 +1,66 @@
+static_resources:
+  listeners:
+    - address:
+        socket_address:
+          address: 0.0.0.0
+          port_value: 80
+      filter_chains:
+        - filters:
+            - name: envoy.filters.network.http_connection_manager
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+                stat_prefix: ingress_http
+                codec_type: auto
+                http_protocol_options:
+                  # accept_http_10 handles pre-HTTP/1.1 traffics for CRS regression tests against legacy HTTP versions
+                  accept_http_10: true
+                route_config:
+                  virtual_hosts:
+                    - name: local_route
+                      domains:
+                        - "*"
+                      routes:
+                        - match:
+                            prefix: "/"
+                          route:
+                            cluster: local_server
+                http_filters:
+                  - name: buffer
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.buffer.v3.Buffer
+                      max_request_bytes: 5242880
+                  - name: envoy.filters.http.httpwasm
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.http_wasm.v3.GuestConfig
+                      name: "httpwasm-coraza-waf"
+                      configuration:
+                        "@type": "type.googleapis.com/google.protobuf.StringValue"
+                        value: |
+                          {
+                            "directives": [
+                              "Include @recommended-conf",
+                              "Include @ftw-conf",
+                              "Include @crs-setup-conf",
+                              "Include @owasp_crs/*.conf"
+                            ]
+                          }
+                      code:
+                        local:
+                          filename: "/build/coraza-http-wasm.wasm"
+                  - name: envoy.filters.http.router
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+  clusters:
+    - name: local_server
+      connect_timeout: 6000s
+      type: STRICT_DNS
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: local_server
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: httpbin
+                      port_value: 8080
