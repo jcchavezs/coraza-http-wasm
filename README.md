@@ -16,6 +16,7 @@ Targets:
   reloadExample      reload the test environment (container) in case of envoy or wasm update.
   runExample         spins up the test environment loading Envoy with the coraza-http-wasm plugin, access at http://localhost:8080.
   teardownExample    tears down the test environment.
+  test               runs all unit tests.
 
 * default target
 ```

@@ -22,6 +22,11 @@ func Build() error {
 	return sh.RunV("tinygo", "build", "-o", filepath.Join("build", "coraza-http-wasm.wasm"), "-scheduler=none", "--no-debug", "-target=wasi")
 }
 
+// Test runs all unit tests.
+func Test() error {
+	return sh.RunV("go", "test", "./...")
+}
+
 // E2e runs e2e tests with wazero
 func E2e() error {
 	return sh.RunV("go", "test", "-tags=e2e", "-v", "./...")
