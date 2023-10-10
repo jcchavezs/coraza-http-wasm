@@ -25,10 +25,10 @@ jobs:
       - name: Install tinygo
         uses: acifani/setup-tinygo@v1
         with:
-          tinygo-version: 0.28.1
+          tinygo-version: '0.30.0'
       - name: Build binary
-        run: make build
+        run: go run mage.go build
       - name: Run tests
-        run: make test
+        run: go run mage.go test
       - name: Run e2e tests
-        run: make e2e
+        run: go run mage.go e2e

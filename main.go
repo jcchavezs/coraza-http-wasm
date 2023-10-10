@@ -2,8 +2,8 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"strings"
 
@@ -13,10 +13,17 @@ import (
 
 	"math/rand"
 
+	"github.com/corazawaf/coraza-http-wasm/operators"
 	"github.com/corazawaf/coraza/v3"
 	"github.com/corazawaf/coraza/v3/debuglog"
 	"github.com/corazawaf/coraza/v3/types"
 )
+
+func init() {
+	// Registers wasilibs operators before initializing the WAF.
+	// See https://github.com/corazawaf/coraza-wasilibs
+	operators.Register()
+}
 
 var waf coraza.WAF
 var txs = map[uint32]types.Transaction{}
@@ -28,7 +35,7 @@ var txs = map[uint32]types.Transaction{}
 func main() {
 	requiredFeatures := api.FeatureBufferRequest | api.FeatureBufferResponse
 	if want, have := requiredFeatures, httpwasm.Host.EnableFeatures(requiredFeatures); !have.IsEnabled(want) {
-		log.Fatal("Unexpected features, want: " + want.String() + ", have: " + have.String())
+		httpwasm.Host.Log(api.LogLevelError, "Unexpected features, want: "+want.String()+", have: "+have.String())
 	}
 	httpwasm.HandleRequestFn = handleRequest
 	httpwasm.HandleResponseFn = handleResponse
@@ -36,7 +43,7 @@ func main() {
 	var err error
 	waf, err = initializeWAF(httpwasm.Host)
 	if err != nil {
-		log.Fatalf("Failed to initialize WAF: %v", err)
+		httpwasm.Host.Log(api.LogLevelError, fmt.Sprintf("Failed to initialize WAF: %v", err))
 	}
 }
 
@@ -90,8 +97,30 @@ func getDirectivesFromHost(host api.Host) (string, error) {
 	return directives.String(), nil
 }
 
+func errorCb(host api.Host) func(types.MatchedRule) {
+	return func(mr types.MatchedRule) {
+		logMsg := mr.ErrorLog()
+		switch mr.Rule().Severity() {
+		case types.RuleSeverityEmergency,
+			types.RuleSeverityAlert,
+			types.RuleSeverityCritical,
+			types.RuleSeverityError:
+			host.Log(api.LogLevelError, logMsg)
+		case types.RuleSeverityWarning:
+			host.Log(api.LogLevelWarn, logMsg)
+		case types.RuleSeverityNotice,
+			types.RuleSeverityInfo:
+			host.Log(api.LogLevelInfo, logMsg)
+		case types.RuleSeverityDebug:
+			host.Log(api.LogLevelDebug, logMsg)
+		}
+	}
+}
+
 func initializeWAF(host api.Host) (coraza.WAF, error) {
 	wafConfig := coraza.NewWAFConfig()
+
+	wafConfig = wafConfig.WithRootFS(root)
 
 	if directives, err := getDirectivesFromHost(host); err == nil {
 		host.Log(api.LogLevelInfo, "Initializing WAF with directives:\n"+directives)
@@ -103,8 +132,11 @@ func initializeWAF(host api.Host) (coraza.WAF, error) {
 	wafConfig = wafConfig.WithDebugLogger(debuglog.DefaultWithPrinterFactory(func(io.Writer) debuglog.Printer {
 		return func(lvl debuglog.Level, message, fields string) {
 			host.Log(toHostLevel(lvl), message+" "+fields)
+			// TODO understand. 3 works.
+			// But I can't print everything as error
+			// host.Log(toHostLevel(3), message+" "+fields)
 		}
-	}))
+	})).WithErrorCallback(errorCb(host))
 
 	waf, err := coraza.NewWAF(wafConfig)
 	if err != nil {
