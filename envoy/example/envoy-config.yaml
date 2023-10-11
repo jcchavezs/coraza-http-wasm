@@ -22,14 +22,11 @@ static_resources:
                           route:
                             cluster: local_server
                 http_filters:
-                  - name: buffer
-                    typed_config:
-                      "@type": type.googleapis.com/envoy.extensions.filters.http.buffer.v3.Buffer
-                      max_request_bytes: 5242880
                   - name: envoy.filters.http.httpwasm
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.http_wasm.v3.GuestConfig
                       name: "httpwasm-coraza-waf"
+                      max_request_bytes: 5242880
                       configuration:
                         "@type": "type.googleapis.com/google.protobuf.StringValue"
                         value: |
@@ -43,7 +40,7 @@ static_resources:
                               "SecRuleEngine On",
                               "SecResponseBodyMimeType text/plain text/html text/xml application/json",
                               "SecDebugLogLevel 9",
-                              "Include @owasp_crs/*.conf",
+                              "#Include @owasp_crs/*.conf",
                               "SecRule REQUEST_URI \"@streq /admin\" \"id:101,phase:1,t:lowercase,deny\" \nSecRule REQUEST_BODY \"@rx maliciouspayload\" \"id:102,phase:2,t:lowercase,deny\" \nSecRule RESPONSE_HEADERS::status \"@rx 406\" \"id:103,phase:3,t:lowercase,deny\" \nSecRule RESPONSE_BODY \"@contains responsebodycode\" \"id:104,phase:4,t:lowercase,deny\""
                             ]
                           }
