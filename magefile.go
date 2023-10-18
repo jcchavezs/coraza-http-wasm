@@ -19,7 +19,7 @@ func Build() error {
 	if err := os.MkdirAll("build", 0755); err != nil {
 		return err
 	}
-	return sh.RunV("tinygo", "build", "-o", filepath.Join("build", "coraza-http-wasm.wasm"), "-scheduler=none", "--no-debug", "-target=wasi")
+	return sh.RunV("tinygo", "build", "-gc=custom", "-tags=custommalloc", "-opt=2", "-o", filepath.Join("build", "coraza-http-wasm.wasm"), "-scheduler=none", "--no-debug", "-target=wasi")
 }
 
 // Test runs all unit tests.

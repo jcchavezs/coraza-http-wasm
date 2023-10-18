@@ -206,9 +206,6 @@ func handleRequest(req api.Request, res api.Response) (next bool, reqCtx uint32)
 		// body inspection, otherwise we just let the request follow its
 		// regular flow.
 
-		// bytes, _ := io.ReadAll(readWriterTo{req.Body()})
-		// tx.DebugLogger().Error().Msg(fmt.Sprintf("DEBUGGING, DUMP: %v", bytes))
-		// it, _, err := tx.WriteRequestBody(bytes)
 		it, _, err := tx.ReadRequestBodyFrom(readWriterTo{req.Body()})
 		if err != nil {
 			return false, 0

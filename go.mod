@@ -10,6 +10,7 @@ require (
 	github.com/mccutchen/go-httpbin/v2 v2.9.0
 	github.com/stretchr/testify v1.8.4
 	github.com/tetratelabs/wazero v1.5.0
+	github.com/wasilibs/nottinygc v0.5.1
 )
 
 require (
