@@ -19,7 +19,8 @@ func Build() error {
 	if err := os.MkdirAll("build", 0755); err != nil {
 		return err
 	}
-	return sh.RunV("tinygo", "build", "-o", filepath.Join("build", "coraza-http-wasm.wasm"), "-scheduler=none", "--no-debug", "-target=wasi")
+	// https://github.com/wasilibs/nottinygc#using-with-envoy being http-wasm, an not proxy-wasm, we should not have to use also -tags=nottinygc_envoy
+	return sh.RunV("tinygo", "build", "-gc=custom", "-tags=custommalloc", "-opt=2", "-o", filepath.Join("build", "coraza-http-wasm.wasm"), "-scheduler=none", "--no-debug", "-target=wasi")
 }
 
 // Test runs all unit tests.

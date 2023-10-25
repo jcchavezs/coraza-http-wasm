@@ -25,13 +25,10 @@ static_resources:
                           route:
                             cluster: local_server
                 http_filters:
-                  - name: buffer
-                    typed_config:
-                      "@type": type.googleapis.com/envoy.extensions.filters.http.buffer.v3.Buffer
-                      max_request_bytes: 5242880
                   - name: envoy.filters.http.httpwasm
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.http_wasm.v3.GuestConfig
+                      max_request_bytes: 5242880
                       name: "httpwasm-coraza-waf"
                       configuration:
                         "@type": "type.googleapis.com/google.protobuf.StringValue"
