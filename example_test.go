@@ -16,7 +16,7 @@ var guest string
 
 func exampleHandler(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "text/plain")
-	w.Write([]byte("Hello world, transaction not disrupted."))
+	_, _ = w.Write([]byte("Hello world, transaction not disrupted."))
 }
 
 func ExampleMain() {
@@ -46,7 +46,9 @@ func ExampleMain() {
 	srvAddress := ":8080"
 	srv := &http.Server{Addr: srvAddress, Handler: w}
 
-	go srv.ListenAndServe()
+	go func() {
+		_ = srv.ListenAndServe()
+	}()
 
 	defer srv.Close()
 
@@ -54,7 +56,7 @@ func ExampleMain() {
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		log.Fatalf("Failed to call the server: %s", err.Error())
+		log.Fatalf("Failed to call the server: %s", err.Error()) // nolint: gocritic
 	}
 
 	fmt.Println(res.StatusCode)

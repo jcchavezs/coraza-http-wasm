@@ -12,21 +12,25 @@ on:
       - "**/*.md"
       - "LICENSE"
 
+env:
+  GO_VERSION: "1.21.x"
+  TINYGO_VERSION: "0.30.0"
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install Go
         uses: actions/setup-go@v3
         with:
-          go-version: v1.20.x
+          go-version: ${{ env.GO_VERSION }}
           cache: true
       - name: Install tinygo
         uses: acifani/setup-tinygo@v1
         with:
-          tinygo-version: '0.30.0'
-      - name: Build binary
+          tinygo-version: ${{ env.TINYGO_VERSION }}
+      - name: Build wasm binary
         run: go run mage.go build
       - name: Run tests
         run: go run mage.go test

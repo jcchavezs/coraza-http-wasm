@@ -4,5 +4,4 @@
 
 package operators
 
-func Register() {
-}
+func Register() {}

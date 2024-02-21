@@ -4,19 +4,17 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math/rand"
 	"net/http"
 	"strings"
-
-	httpwasm "github.com/http-wasm/http-wasm-guest-tinygo/handler"
-	"github.com/http-wasm/http-wasm-guest-tinygo/handler/api"
-	"github.com/tidwall/gjson"
-
-	"math/rand"
 
 	"github.com/corazawaf/coraza-http-wasm/operators"
 	"github.com/corazawaf/coraza/v3"
 	"github.com/corazawaf/coraza/v3/debuglog"
 	"github.com/corazawaf/coraza/v3/types"
+	httpwasm "github.com/http-wasm/http-wasm-guest-tinygo/handler"
+	"github.com/http-wasm/http-wasm-guest-tinygo/handler/api"
+	"github.com/tidwall/gjson"
 )
 
 func init() {
@@ -170,11 +168,11 @@ func handleRequest(req api.Request, res api.Response) (next bool, reqCtx uint32)
 		cport  int
 	)
 	// IMPORTANT: Some http.Request.RemoteAddr implementations will not contain port or contain IPV6: [2001:db8::1]:8080
-	//idx := strings.LastIndexByte(req.RemoteAddr, ':')
-	//if idx != -1 {
-	//	client = req.RemoteAddr[:idx]
-	//	cport, _ = strconv.Atoi(req.RemoteAddr[idx+1:])
-	//}
+	// idx := strings.LastIndexByte(req.RemoteAddr, ':')
+	// if idx != -1 {
+	//	 client = req.RemoteAddr[:idx]
+	//	 cport, _ = strconv.Atoi(req.RemoteAddr[idx+1:])
+	// }
 
 	var it *types.Interruption
 	// There is no socket access in the request object, so we neither know the server client nor port.
