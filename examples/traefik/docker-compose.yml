@@ -1,0 +1,18 @@
+services:
+  httpbin:
+    image: mccutchen/go-httpbin:v2.9.0
+    environment:
+      - MAX_BODY_SIZE=15728640 # 15 MiB
+    command: [ "/bin/go-httpbin", "-port", "8000" ]
+    ports:
+      - 8000:8000
+  traefik:
+    image: traefik:v3.0.0-rc1
+    ports:
+      - 80:80
+      - 443:443
+    volumes_from:
+        - ""
+    volumes:
+      - .:/etc/traefik/
+      - ./build:/plugins-local/src/github.com/jcchavezs/coraza-http-wasm
