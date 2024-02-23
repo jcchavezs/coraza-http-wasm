@@ -20,19 +20,48 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out code
+        uses: actions/checkout@v4
+
       - name: Install Go
         uses: actions/setup-go@v3
         with:
           go-version: ${{ env.GO_VERSION }}
           cache: true
+
       - name: Install tinygo
         uses: acifani/setup-tinygo@v1
         with:
           tinygo-version: ${{ env.TINYGO_VERSION }}
+
       - name: Build wasm binary
         run: go run mage.go build
+
       - name: Run tests
         run: go run mage.go test
+
       - name: Run e2e tests
         run: go run mage.go e2e
+
+      - name: Create draft release
+        # Triggered only on tag creation and if release does not exist
+        if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+        run: |
+          set +e
+          tag="${GITHUB_REF#refs/tags/}"
+          if ! gh release view ${tag}; then
+            echo "Release ${tag} does not exist, creating..."
+            gh release create ${tag} --draft --title ${GITHUB_REF#refs/tags/}
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push build artifact to release
+        # Triggered only on tag creation
+        if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+        run: |
+          tag="${GITHUB_REF#refs/tags/}"
+          zip -j build/coraza-http-wasm-${tag}.zip build/coraza-http-wasm.wasm
+          gh release upload ${tag} ./build/coraza-http-wasm-${tag}.zip --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
