@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Go
         uses: actions/setup-go@v3
@@ -24,22 +24,10 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
           cache: true
 
-      - name: Install TinyGo
-        run: |
-          gh release download v${TINYGO_VERSION} -p '*.linux-amd64.tar.gz' -D ~ -R github.com/tinygo-org/tinygo
-          tar -xf ~/tinygo${TINYGO_VERSION}.linux-amd64.tar.gz  -C $HOME
-          echo "$HOME/tinygo/bin" >> $GITHUB_PATH
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Cache TinyGo build
-        uses: actions/cache@v3
+      - name: Install tinygo
+        uses: acifani/setup-tinygo@v1
         with:
-          path: |
-            ~/.cache/tinygo
-          key: ${{ runner.os }}-tinygo-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-tinygo-
+          tinygo-version: ${{ env.TINYGO_VERSION }}
 
       - name: Get last commit of coraza
         id: coraza-latest-commit
@@ -50,10 +38,10 @@ jobs:
       - name: Fetch last coraza version
         run: go get -u github.com/corazawaf/coraza/v3@${{ steps.coraza-latest-commit.outputs.value }} && go mod tidy
 
-      - name: Build WASM filter
+      - name: Build binary
         run: go run mage.go build
 
-      - name: Run unit tests
+      - name: Run tests
         run: go run mage.go test
 
       - name: Run e2e tests
