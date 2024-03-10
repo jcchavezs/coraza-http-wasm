@@ -5,6 +5,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 
@@ -54,7 +55,7 @@ func Build() error {
 	if err := os.MkdirAll("build", 0755); err != nil {
 		return err
 	}
-	return sh.RunV("tinygo", "build", "-o", filepath.Join("build", "coraza-http-wasm.wasm"), "-scheduler=none", "--no-debug", "-target=wasi")
+	return sh.RunV("tinygo", "build", "-o", filepath.Join("build", "coraza-http-wasm.wasm"), "-gc=custom", "-tags=custommalloc", "-scheduler=none", "--no-debug", "-target=wasi")
 }
 
 // Test runs all unit tests.
@@ -67,6 +68,37 @@ func E2e() error {
 	return sh.RunV("go", "test", "-run=^TestE2E", "-tags=e2e", "-v", ".")
 }
 
+func copy(src, dst string) error {
+	sourceFileStat, err := os.Stat(src)
+	if err != nil {
+		return err
+	}
+
+	if !sourceFileStat.Mode().IsRegular() {
+		return fmt.Errorf("%s is not a regular file", src)
+	}
+
+	source, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer source.Close()
+
+	destination, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer destination.Close()
+
+	_, err = io.Copy(destination, source)
+	return err
+}
+
 func FTW() error {
+	if err := copy("./build/coraza-http-wasm.wasm", "./testing/coreruleset/build/coraza-http-wasm.wasm"); err != nil {
+		return err
+	}
+	defer os.Remove("./testing/coreruleset/build/coraza-http-wasm.wasm")
+
 	return sh.RunV("go", "test", "./testing/coreruleset")
 }

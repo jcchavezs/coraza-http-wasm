@@ -5,6 +5,7 @@ go 1.22
 toolchain go1.22.0
 
 require (
+	github.com/corazawaf/coraza-coreruleset/v4 v4.0.0
 	github.com/corazawaf/coraza-wasilibs v0.0.0-20231002095218-9dd6e48f7443
 	github.com/corazawaf/coraza/v3 v3.1.0
 	github.com/http-wasm/http-wasm-guest-tinygo v0.4.0
@@ -12,6 +13,7 @@ require (
 	github.com/mccutchen/go-httpbin/v2 v2.13.4
 	github.com/stretchr/testify v1.8.4
 	github.com/tetratelabs/wazero v1.6.0
+	github.com/wasilibs/nottinygc v0.4.0
 )
 
 require (

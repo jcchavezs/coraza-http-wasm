@@ -15,18 +15,16 @@ import (
 	"testing"
 	"time"
 
+	"github.com/bmatcuk/doublestar/v4"
+	crstests "github.com/corazawaf/coraza-coreruleset/v4/tests"
 	"github.com/coreruleset/go-ftw/config"
 	"github.com/coreruleset/go-ftw/output"
 	"github.com/coreruleset/go-ftw/runner"
-	"github.com/mccutchen/go-httpbin/v2/httpbin"
-
-	"github.com/bmatcuk/doublestar/v4"
-	crstests "github.com/corazawaf/coraza-coreruleset/v4/tests"
-
 	"github.com/coreruleset/go-ftw/test"
 	"github.com/http-wasm/http-wasm-host-go/api"
 	"github.com/http-wasm/http-wasm-host-go/handler"
 	wasm "github.com/http-wasm/http-wasm-host-go/handler/nethttp"
+	"github.com/mccutchen/go-httpbin/v2/httpbin"
 	"github.com/rs/zerolog"
 )
 
@@ -155,7 +153,7 @@ Include @owasp_crs/*.conf
 
 	res, err := runner.Run(cfg, tests, runner.RunnerConfig{
 		ShowTime:    false,
-		ReadTimeout: 10 * time.Second,
+		ReadTimeout: 5 * time.Second,
 	}, output.NewOutput("quiet", os.Stdout))
 	if err != nil {
 		t.Fatal(err)

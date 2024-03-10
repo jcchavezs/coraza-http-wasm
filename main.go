@@ -17,6 +17,7 @@ import (
 	httpwasm "github.com/http-wasm/http-wasm-guest-tinygo/handler"
 	"github.com/http-wasm/http-wasm-guest-tinygo/handler/api"
 	"github.com/tidwall/gjson"
+	_ "github.com/wasilibs/nottinygc"
 )
 
 func init() {

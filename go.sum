@@ -1,3 +1,5 @@
+github.com/corazawaf/coraza-coreruleset/v4 v4.0.0 h1:1jmrC65x7rJwSvxySaWyk84T45PwBvNe7188bfdnTCA=
+github.com/corazawaf/coraza-coreruleset/v4 v4.0.0/go.mod h1:RQMGurig+irQq7v21yq7rM/9SAEf1bT6hCSplJ0ByKY=
 github.com/corazawaf/coraza-wasilibs v0.0.0-20231002095218-9dd6e48f7443 h1:36dTwNjieaDJB/AxPRUHGKCiCn8Bqpu25fb8OdrPemQ=
 github.com/corazawaf/coraza-wasilibs v0.0.0-20231002095218-9dd6e48f7443/go.mod h1:aMVO6E4TFAxXnPmyrrEoXVYeMDovq3IsKwuetAR38JE=
 github.com/corazawaf/coraza/v3 v3.1.0 h1:CB6YxNXdbZjUJS/0FVFoFvS8eOVFbIvlNuHNC5dh88c=
