@@ -66,3 +66,7 @@ func Test() error {
 func E2e() error {
 	return sh.RunV("go", "test", "-run=^TestE2E", "-tags=e2e", "-v", ".")
 }
+
+func FTW() error {
+	return sh.RunV("go", "test", "./testing/coreruleset")
+}

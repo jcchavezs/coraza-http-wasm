@@ -1,6 +1,8 @@
 module github.com/corazawaf/coraza-http-wasm
 
-go 1.20
+go 1.22
+
+toolchain go1.22.0
 
 require (
 	github.com/corazawaf/coraza-wasilibs v0.0.0-20231002095218-9dd6e48f7443
