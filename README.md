@@ -11,17 +11,10 @@ $ go run mage.go -l
 Targets:
   build*             builds the Coraza wasm plugin.
   e2e                runs e2e tests with wazero
-  envoyE2e           runs e2e tests against Envoy with the coraza-http-wasm plugin.
-  envoyFtw           runs ftw tests against Envoy with the coraza-http-wasm plugin.
-  reloadExample      reload the test environment (container) in case of envoy or wasm update.
-  runExample         spins up the test environment loading Envoy with the coraza-http-wasm plugin, access at http://localhost:8080.
-  teardownExample    tears down the test environment.
   test               runs all unit tests.
 
 * default target
 ```
-
-**Note**: In order to run Envoy specific mage commands, an Envoy binary that supports http-wasm filter is needed. Add it to `./envoy/envoybin` naming it `envoy`.
 
 ### Building the filter
 
