@@ -42,8 +42,11 @@ jobs:
       - name: Run tests
         run: go run mage.go test
 
-      - name: Run e2e tests
+      - name: Run E2E tests
         run: go run mage.go e2e
+
+      - name: Run FTW tests
+        run: go run mage.go ftw
 
       - name: Create draft release
         # Triggered only on tag creation and if release does not exist

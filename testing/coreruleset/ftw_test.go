@@ -156,7 +156,7 @@ Include @owasp_crs/*.conf
 	res, err := runner.Run(cfg, tests, runner.RunnerConfig{
 		ShowTime:    false,
 		ReadTimeout: 10 * time.Second,
-	}, output.NewOutput("plain", os.Stdout))
+	}, output.NewOutput("quiet", os.Stdout))
 	if err != nil {
 		t.Fatal(err)
 	}
