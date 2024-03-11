@@ -96,10 +96,14 @@ func copy(src, dst string) error {
 }
 
 func FTW() error {
-	if err := copy(filepath.Join("build", "coraza-http-wasm.wasm"), filepath.Join("testing", "coreruleset", "build", "coraza-http-wasm.wasm")); err != nil {
-		return err
+	var (
+		binSrc = filepath.Join("build", "coraza-http-wasm.wasm")
+		binDst = filepath.Join("testing", "coreruleset", "build", "coraza-http-wasm.wasm")
+	)
+	if err := copy(binSrc, binDst); err != nil {
+		return fmt.Errorf("copying build: %v", err)
 	}
-	defer os.Remove("./testing/coreruleset/build/coraza-http-wasm.wasm")
+	defer os.Remove(binDst)
 
 	return sh.RunV("go", "test", "./testing/coreruleset")
 }
