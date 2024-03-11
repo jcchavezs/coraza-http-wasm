@@ -55,6 +55,7 @@ func Build() error {
 	if err := os.MkdirAll("build", 0755); err != nil {
 		return err
 	}
+
 	return sh.RunV("tinygo", "build", "-o", filepath.Join("build", "coraza-http-wasm.wasm"), "-gc=custom", "-tags=custommalloc", "-scheduler=none", "--no-debug", "-target=wasi")
 }
 
@@ -95,7 +96,7 @@ func copy(src, dst string) error {
 }
 
 func FTW() error {
-	if err := copy("./build/coraza-http-wasm.wasm", "./testing/coreruleset/build/coraza-http-wasm.wasm"); err != nil {
+	if err := copy(filepath.Join("build", "coraza-http-wasm.wasm"), filepath.Join("testing", "coreruleset", "build", "coraza-http-wasm.wasm")); err != nil {
 		return err
 	}
 	defer os.Remove("./testing/coreruleset/build/coraza-http-wasm.wasm")
