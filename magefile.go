@@ -85,6 +85,10 @@ func copy(src, dst string) error {
 	}
 	defer source.Close()
 
+	if err := os.Mkdir(filepath.Dir(dst), 0755); err != nil {
+		return err
+	}
+
 	destination, err := os.Create(dst)
 	if err != nil {
 		return fmt.Errorf("creating destination file: %v", err)
@@ -100,6 +104,7 @@ func FTW() error {
 		binSrc = filepath.Join("build", "coraza-http-wasm.wasm")
 		binDst = filepath.Join("testing", "coreruleset", "build", "coraza-http-wasm.wasm")
 	)
+
 	if err := copy(binSrc, binDst); err != nil {
 		return fmt.Errorf("copying build: %v", err)
 	}
