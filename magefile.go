@@ -87,7 +87,7 @@ func copy(src, dst string) error {
 
 	destination, err := os.Create(dst)
 	if err != nil {
-		return err
+		return fmt.Errorf("creating destination file: %v", err)
 	}
 	defer destination.Close()
 
