@@ -35,7 +35,7 @@ func Format() error {
 		".")
 }
 
-// Lint verifies code quality.
+// Lint verifies code format.
 func Lint() error {
 	if err := sh.RunV("go", "run", fmt.Sprintf("github.com/golangci/golangci-lint/cmd/golangci-lint@%s", golangCILintVer), "run"); err != nil {
 		return err
@@ -50,7 +50,7 @@ func Lint() error {
 	return nil
 }
 
-// Build builds the Coraza wasm plugin.
+// Build builds the wasm binary.
 func Build() error {
 	if err := os.MkdirAll("build", 0755); err != nil {
 		return err
@@ -64,7 +64,7 @@ func Test() error {
 	return sh.RunV("go", "test", "./...")
 }
 
-// E2e runs e2e tests with wazero
+// E2e runs e2e tests
 func E2e() error {
 	return sh.RunV("go", "test", "-run=^TestE2E", "-tags=e2e", "-v", ".")
 }
@@ -99,6 +99,7 @@ func copy(src, dst string) error {
 	return err
 }
 
+// FTW runs the FTW test suite
 func FTW() error {
 	var (
 		binSrc = filepath.Join("build", "coraza-http-wasm.wasm")
