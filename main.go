@@ -253,10 +253,16 @@ func obtainStatusCodeFromInterruptionOrDefault(it *types.Interruption, defaultSt
 }
 
 func handleResponse(reqCtx uint32, req api.Request, resp api.Response, isError bool) {
+	if reqCtx == 0 {
+		return
+	}
+
 	tx, ok := txs[reqCtx]
 	if !ok {
 		return
 	}
+	delete(txs, reqCtx)
+
 	defer func() {
 		// We run phase 5 rules and create audit logs (if enabled)
 		tx.ProcessLogging()
@@ -265,7 +271,6 @@ func handleResponse(reqCtx uint32, req api.Request, resp api.Response, isError b
 			tx.DebugLogger().Error().Err(err).Msg("Failed to close the transaction")
 		}
 	}()
-	delete(txs, reqCtx)
 
 	if isError {
 		return
