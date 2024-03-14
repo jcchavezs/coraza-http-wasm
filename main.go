@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 
+	coreruleset "github.com/corazawaf/coraza-coreruleset/v4"
 	"github.com/corazawaf/coraza-http-wasm/operators"
 	"github.com/corazawaf/coraza/v3"
 	"github.com/corazawaf/coraza/v3/debuglog"
@@ -117,9 +118,7 @@ func errorCb(host api.Host) func(types.MatchedRule) {
 }
 
 func initializeWAF(host api.Host) (coraza.WAF, error) {
-	wafConfig := coraza.NewWAFConfig()
-
-	wafConfig = wafConfig.WithRootFS(root)
+	wafConfig := coraza.NewWAFConfig().WithRootFS(coreruleset.FS)
 
 	if directives, err := getDirectivesFromHost(host); err == nil {
 		host.Log(api.LogLevelInfo, "Initializing WAF with directives:\n"+directives)

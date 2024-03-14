@@ -5,6 +5,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 
@@ -54,7 +55,8 @@ func Build() error {
 	if err := os.MkdirAll("build", 0755); err != nil {
 		return err
 	}
-	return sh.RunV("tinygo", "build", "-o", filepath.Join("build", "coraza-http-wasm.wasm"), "-scheduler=none", "--no-debug", "-target=wasi")
+
+	return sh.RunV("tinygo", "build", "-o", filepath.Join("build", "coraza-http-wasm.wasm"), "-gc=custom", "-tags=custommalloc", "-scheduler=none", "--no-debug", "-target=wasi")
 }
 
 // Test runs all unit tests.
@@ -65,4 +67,48 @@ func Test() error {
 // E2e runs e2e tests with wazero
 func E2e() error {
 	return sh.RunV("go", "test", "-run=^TestE2E", "-tags=e2e", "-v", ".")
+}
+
+func copy(src, dst string) error {
+	sourceFileStat, err := os.Stat(src)
+	if err != nil {
+		return err
+	}
+
+	if !sourceFileStat.Mode().IsRegular() {
+		return fmt.Errorf("%s is not a regular file", src)
+	}
+
+	source, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer source.Close()
+
+	if err := os.Mkdir(filepath.Dir(dst), 0755); err != nil {
+		return err
+	}
+
+	destination, err := os.Create(dst)
+	if err != nil {
+		return fmt.Errorf("creating destination file: %v", err)
+	}
+	defer destination.Close()
+
+	_, err = io.Copy(destination, source)
+	return err
+}
+
+func FTW() error {
+	var (
+		binSrc = filepath.Join("build", "coraza-http-wasm.wasm")
+		binDst = filepath.Join("testing", "coreruleset", "build", "coraza-http-wasm.wasm")
+	)
+
+	if err := copy(binSrc, binDst); err != nil {
+		return fmt.Errorf("copying build: %v", err)
+	}
+	defer os.Remove(binDst)
+
+	return sh.RunV("go", "test", "./testing/coreruleset")
 }

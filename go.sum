@@ -1,3 +1,5 @@
+github.com/corazawaf/coraza-coreruleset/v4 v4.0.0 h1:1jmrC65x7rJwSvxySaWyk84T45PwBvNe7188bfdnTCA=
+github.com/corazawaf/coraza-coreruleset/v4 v4.0.0/go.mod h1:RQMGurig+irQq7v21yq7rM/9SAEf1bT6hCSplJ0ByKY=
 github.com/corazawaf/coraza-wasilibs v0.0.0-20231002095218-9dd6e48f7443 h1:36dTwNjieaDJB/AxPRUHGKCiCn8Bqpu25fb8OdrPemQ=
 github.com/corazawaf/coraza-wasilibs v0.0.0-20231002095218-9dd6e48f7443/go.mod h1:aMVO6E4TFAxXnPmyrrEoXVYeMDovq3IsKwuetAR38JE=
 github.com/corazawaf/coraza/v3 v3.1.0 h1:CB6YxNXdbZjUJS/0FVFoFvS8eOVFbIvlNuHNC5dh88c=
@@ -7,6 +9,7 @@ github.com/corazawaf/libinjection-go v0.1.3/go.mod h1:OP4TM7xdJ2skyXqNX1AN1wN5nN
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/foxcpp/go-mockdns v1.1.0 h1:jI0rD8M0wuYAxL7r/ynTrCQQq0BVqfB99Vgk7DlmewI=
+github.com/foxcpp/go-mockdns v1.1.0/go.mod h1:IhLeSFGed3mJIAXPH2aiRQB+kqz7oqu8ld2qVbOu7Wk=
 github.com/http-wasm/http-wasm-guest-tinygo v0.4.0 h1:sWd1hqOL8LF3DVRPXloVELTQItibKtDCtVSA4UfMf4Y=
 github.com/http-wasm/http-wasm-guest-tinygo v0.4.0/go.mod h1:zcKr7h/t5ha2ZWIMwV4iOqhfC/qno/tNPYgybVkn/MQ=
 github.com/http-wasm/http-wasm-host-go v0.6.0 h1:Vd4XvcFB3NMgWp2VLCQaiqYgLneN2lChbyN9NGoNDro=
@@ -21,6 +24,7 @@ github.com/magefile/mage v1.15.0/go.mod h1:z5UZb/iS3GoOSn0JgWuiw7dxlurVYTu+/jHXq
 github.com/mccutchen/go-httpbin/v2 v2.13.4 h1:KjUeehEAcWG+ce5WJVtP3cyquL0Qe/jQ4UWe/N1BVDw=
 github.com/mccutchen/go-httpbin/v2 v2.13.4/go.mod h1:f4DUXYlU6yH0V81O4lJIwqpmYdTXXmYwzxMnYEimFPk=
 github.com/miekg/dns v1.1.57 h1:Jzi7ApEIzwEPLHWRcafCN9LZSBbqQpxjt/wpgvg7wcM=
+github.com/miekg/dns v1.1.57/go.mod h1:uqRjCRUuEAA6qsOiJvDd+CFo/vW+y5WR6SNmHE55hZk=
 github.com/petar-dambovaliev/aho-corasick v0.0.0-20230725210150-fb29fc3c913e h1:POJco99aNgosh92lGqmx7L1ei+kCymivB/419SD15PQ=
 github.com/petar-dambovaliev/aho-corasick v0.0.0-20230725210150-fb29fc3c913e/go.mod h1:EHPiTAKtiFmrMldLUNswFwfZ2eJIYBHktdaUTZxYWRw=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
@@ -43,13 +47,17 @@ github.com/wasilibs/go-libinjection v0.4.0/go.mod h1:zD7fNXKSaTKoSTmrfuP9Gc16alN
 github.com/wasilibs/go-re2 v1.4.0 h1:Jp6BM8G/zajgY1BCQUm3i7oGMdR1gA5EBv87wGd2ysc=
 github.com/wasilibs/go-re2 v1.4.0/go.mod h1:hLzlKjEgON+17hWjikLx8hJBkikyjQH/lsqCy9t6tIY=
 github.com/wasilibs/nottinygc v0.4.0 h1:h1TJMihMC4neN6Zq+WKpLxgd9xCFMw7O9ETLwY2exJQ=
+github.com/wasilibs/nottinygc v0.4.0/go.mod h1:oDcIotskuYNMpqMF23l7Z8uzD4TC0WXHK8jetlB3HIo=
 golang.org/x/mod v0.14.0 h1:dGoOF9QVLYng8IHTm7BAyWqCqSheQ5pYWGhzW00YJr0=
+golang.org/x/mod v0.14.0/go.mod h1:hTbmBsO62+eylJbnUtE2MGJUyE7QWk4xUqPFrRgJ+7c=
 golang.org/x/net v0.21.0 h1:AQyQV4dYCvJ7vGmJyKki9+PBdyvhkSd8EIx/qb0AYv4=
 golang.org/x/net v0.21.0/go.mod h1:bIjVDfnllIU7BJ2DNgfnXvpSvtn8VRwhlsaeUTyUS44=
 golang.org/x/sync v0.6.0 h1:5BMeUDZ7vkXGfEr1x9B4bRcTH4lpkTkpdh0T/J+qjbQ=
 golang.org/x/sync v0.6.0/go.mod h1:Czt+wKu1gCyEFDUtn0jG5QVvpJ6rzVqr5aXyt9drQfk=
 golang.org/x/sys v0.17.0 h1:25cE3gD+tdBA7lp7QfhuV+rJiE9YXTcS3VG1SqssI/Y=
+golang.org/x/sys v0.17.0/go.mod h1:/VUhepiaJMQUp4+oa/7Zr1D23ma6VTLIYjOOTFZPUcA=
 golang.org/x/tools v0.15.0 h1:zdAyfUGbYmuVokhzVmghFl2ZJh5QhcfebBgmVPFYA+8=
+golang.org/x/tools v0.15.0/go.mod h1:hpksKq4dtpQWS1uQ61JkdqWM3LscIS6Slf+VVkm+wQk=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 h1:YR8cESwS4TdDjEe65xsg0ogRM/Nc3DYOhEAlW+xobZo=
 gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
