@@ -56,7 +56,7 @@ func Build() error {
 		return err
 	}
 
-	return sh.RunV("tinygo", "build", "-o", filepath.Join("build", "coraza-http-wasm.wasm"), "-gc=custom", "-tags=custommalloc", "-scheduler=none", "--no-debug", "-target=wasi")
+	return sh.RunV("tinygo", "build", "-o", filepath.Join("build", "coraza-http-wasm.wasm"), "-opt=2", "-gc=custom", "-tags=custommalloc", "-scheduler=none", "--no-debug", "-target=wasi")
 }
 
 // Test runs all unit tests.
