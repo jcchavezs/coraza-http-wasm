@@ -66,7 +66,6 @@ func toHostLevel(lvl debuglog.Level) api.LogLevel {
 
 func getDirectivesFromHost(host api.Host) (string, error) {
 	if len(host.GetConfig()) == 0 {
-		host.Log(api.LogLevelWarn, "Empty host config")
 		return "", nil
 	}
 
