@@ -27,10 +27,11 @@ func (h mockAPIHost) Log(_ api.LogLevel, msg string) {
 
 func TestGetDirectivesFromHost(t *testing.T) {
 	t.Run("empty config", func(t *testing.T) {
-		_, err := getDirectivesFromHost(mockAPIHost{getConfig: func() []byte {
+		directives, err := getDirectivesFromHost(mockAPIHost{t: t, getConfig: func() []byte {
 			return nil
 		}})
-		require.ErrorContains(t, err, "empty config")
+		require.Empty(t, directives)
+		require.NoError(t, err)
 	})
 
 	t.Run("invalid JSON", func(t *testing.T) {
