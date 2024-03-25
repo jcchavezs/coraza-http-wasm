@@ -6,6 +6,7 @@ import (
 	"io"
 	"math/rand"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 
@@ -44,6 +45,7 @@ func main() {
 	waf, err = initializeWAF(httpwasm.Host)
 	if err != nil {
 		httpwasm.Host.Log(api.LogLevelError, fmt.Sprintf("Failed to initialize WAF: %v", err))
+		os.Exit(1)
 	}
 }
 
@@ -64,7 +66,8 @@ func toHostLevel(lvl debuglog.Level) api.LogLevel {
 
 func getDirectivesFromHost(host api.Host) (string, error) {
 	if len(host.GetConfig()) == 0 {
-		return "", errors.New("empty config")
+		host.Log(api.LogLevelWarn, "Empty host config")
+		return "", nil
 	}
 
 	var directives = strings.Builder{}
@@ -121,8 +124,12 @@ func initializeWAF(host api.Host) (coraza.WAF, error) {
 	wafConfig := coraza.NewWAFConfig().WithRootFS(coreruleset.FS)
 
 	if directives, err := getDirectivesFromHost(host); err == nil {
-		host.Log(api.LogLevelInfo, "Initializing WAF with directives:\n"+directives)
-		wafConfig = wafConfig.WithDirectives(directives)
+		if directives == "" {
+			host.Log(api.LogLevelWarn, "Initializing WAF with no directives")
+		} else {
+			host.Log(api.LogLevelDebug, "Initializing WAF with directives:\n"+directives)
+			wafConfig = wafConfig.WithDirectives(directives)
+		}
 	} else {
 		return nil, err
 	}
