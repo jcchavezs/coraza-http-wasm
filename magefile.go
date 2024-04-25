@@ -11,6 +11,8 @@ import (
 
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
+	"github.com/tetratelabs/wabin/binary"
+	"github.com/tetratelabs/wabin/wasm"
 )
 
 var Default = Build
@@ -56,7 +58,32 @@ func Build() error {
 		return err
 	}
 
-	return sh.RunV("tinygo", "build", "-o", filepath.Join("build", "coraza-http-wasm.wasm"), "-opt=2", "-gc=custom", "-tags=custommalloc", "-scheduler=none", "--no-debug", "-target=wasi")
+	err := sh.RunV("tinygo", "build", "-o", filepath.Join("build", "coraza-http-wasm-raw.wasm"), "-opt=2", "-gc=custom", "-tags='custommalloc no_fs_access'", "-scheduler=none", "--no-debug", "-target=wasi")
+	if err != nil {
+		return err
+	}
+
+	return patchWasm(filepath.Join("build", "coraza-http-wasm-raw.wasm"), filepath.Join("build", "coraza-http-wasm.wasm"), 1050)
+}
+
+func patchWasm(inPath, outPath string, initialPages int) error {
+	raw, err := os.ReadFile(inPath)
+	if err != nil {
+		return err
+	}
+	mod, err := binary.DecodeModule(raw, wasm.CoreFeaturesV2)
+	if err != nil {
+		return err
+	}
+
+	mod.MemorySection.Min = uint32(initialPages)
+
+	out := binary.EncodeModule(mod)
+	if err = os.WriteFile(outPath, out, 0644); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Test runs all unit tests.
@@ -85,7 +112,7 @@ func copy(src, dst string) error {
 	}
 	defer source.Close()
 
-	if err := os.Mkdir(filepath.Dir(dst), 0755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(dst), 0755); err != nil {
 		return err
 	}
 
@@ -111,5 +138,5 @@ func FTW() error {
 	}
 	defer os.Remove(binDst)
 
-	return sh.RunV("go", "test", "./testing/coreruleset")
+	return sh.RunV("go", "test", "-count=1", "./testing/coreruleset")
 }
