@@ -10,6 +10,7 @@ require (
 	github.com/http-wasm/http-wasm-host-go v0.6.0
 	github.com/mccutchen/go-httpbin/v2 v2.13.4
 	github.com/stretchr/testify v1.8.4
+	github.com/tetratelabs/wabin v0.0.0-20230304001439-f6f874872834
 	github.com/tetratelabs/wazero v1.6.0
 	github.com/wasilibs/nottinygc v0.4.0
 )

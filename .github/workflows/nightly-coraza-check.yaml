@@ -46,3 +46,6 @@ jobs:
 
       - name: Run e2e tests
         run: go run mage.go e2e
+
+      - name: Run FTW tests
+        run: go run mage.go ftw
