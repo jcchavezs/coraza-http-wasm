@@ -155,13 +155,18 @@ func handleRequest(req api.Request, res api.Response) (next bool, reqCtx uint32)
 
 	// Early return, Coraza is not going to process any rule
 	if tx.IsRuleEngineOff() {
-		return true, 0
+		next = true
+		tx.Close()
+		return
 	}
 
 	defer func() {
 		if tx.IsInterrupted() {
 			// We run phase 5 rules and create audit logs (if enabled)
 			tx.ProcessLogging()
+		}
+
+		if !next {
 			// we remove temporary files and free some memory
 			if err := tx.Close(); err != nil {
 				tx.DebugLogger().Error().Err(err).Msg("Failed to close the transaction")
@@ -204,7 +209,7 @@ func handleRequest(req api.Request, res api.Response) (next bool, reqCtx uint32)
 	it = tx.ProcessRequestHeaders()
 	if it != nil {
 		handleInterruption(it, res)
-		return false, 0
+		return
 	}
 
 	if tx.IsRequestBodyAccessible() {
@@ -213,24 +218,26 @@ func handleRequest(req api.Request, res api.Response) (next bool, reqCtx uint32)
 		// regular flow.
 		it, _, err := tx.ReadRequestBodyFrom(readWriterTo{req.Body()})
 		if err != nil {
-			return false, 0
+			tx.DebugLogger().Error().Err(err).Msg("Failed to read request body")
+			return
 		}
 
 		if it != nil {
 			handleInterruption(it, res)
-			return false, 0
+			return
 		}
 	}
 
 	var err error
 	it, err = tx.ProcessRequestBody()
 	if err != nil {
-		return false, 0
+		tx.DebugLogger().Error().Err(err).Msg("Failed to process request body")
+		return
 	}
 
 	if it != nil {
 		handleInterruption(it, res)
-		return false, 0
+		return
 	}
 
 	reqCtx = rand.Uint32()
