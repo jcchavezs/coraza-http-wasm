@@ -10,13 +10,15 @@ import (
 	"strconv"
 	"strings"
 
-	coreruleset "github.com/corazawaf/coraza-coreruleset/v4"
+	coreruleset "github.com/corazawaf/coraza-coreruleset"
 	"github.com/corazawaf/coraza-http-wasm/operators"
 	"github.com/corazawaf/coraza/v3"
 	"github.com/corazawaf/coraza/v3/debuglog"
 	"github.com/corazawaf/coraza/v3/types"
 	httpwasm "github.com/http-wasm/http-wasm-guest-tinygo/handler"
 	"github.com/http-wasm/http-wasm-guest-tinygo/handler/api"
+	"github.com/jcchavezs/mergefs"
+	fsio "github.com/jcchavezs/mergefs/io"
 	"github.com/tidwall/gjson"
 )
 
@@ -64,20 +66,31 @@ func toHostLevel(lvl debuglog.Level) api.LogLevel {
 	}
 }
 
-func getDirectivesFromHost(host api.Host) (string, error) {
+type config struct {
+	includeCRS bool
+	directives string
+}
+
+func getConfigFromHost(host api.Host) (config, error) {
+	cfg := config{includeCRS: true}
+
 	if len(host.GetConfig()) == 0 {
-		return "", nil
+		return cfg, nil
 	}
 
 	var directives = strings.Builder{}
 	cfgAsJSON := gjson.ParseBytes(host.GetConfig())
 	if !cfgAsJSON.Exists() {
-		return "", errors.New("invalid host config")
+		return config{}, errors.New("invalid host config")
+	}
+
+	if includeCRSRes := cfgAsJSON.Get("includeCRS"); includeCRSRes.Exists() {
+		cfg.includeCRS = includeCRSRes.Bool()
 	}
 
 	directivesResult := cfgAsJSON.Get("directives")
 	if !directivesResult.IsArray() {
-		return "", errors.New("invalid host config, array expected for field directives")
+		return config{}, errors.New("invalid host config, array expected for field directives")
 	}
 
 	isFirst := true
@@ -93,10 +106,11 @@ func getDirectivesFromHost(host api.Host) (string, error) {
 	})
 
 	if directives.Len() == 0 {
-		return "", errors.New("empty directives")
+		return config{}, errors.New("empty directives")
 	}
 
-	return directives.String(), nil
+	cfg.directives = directives.String()
+	return cfg, nil
 }
 
 func errorCb(host api.Host) func(types.MatchedRule) {
@@ -120,14 +134,18 @@ func errorCb(host api.Host) func(types.MatchedRule) {
 }
 
 func initializeWAF(host api.Host) (coraza.WAF, error) {
-	wafConfig := coraza.NewWAFConfig().WithRootFS(coreruleset.FS)
+	wafConfig := coraza.NewWAFConfig()
 
-	if directives, err := getDirectivesFromHost(host); err == nil {
-		if directives == "" {
+	if cfg, err := getConfigFromHost(host); err == nil {
+		if cfg.includeCRS {
+			wafConfig = wafConfig.WithRootFS(mergefs.Merge(coreruleset.FS, fsio.OSFS))
+		}
+
+		if cfg.directives == "" {
 			host.Log(api.LogLevelWarn, "Initializing WAF with no directives")
 		} else {
-			host.Log(api.LogLevelDebug, "Initializing WAF with directives:\n"+directives)
-			wafConfig = wafConfig.WithDirectives(directives)
+			host.Log(api.LogLevelDebug, "Initializing WAF with directives:\n"+cfg.directives)
+			wafConfig = wafConfig.WithDirectives(cfg.directives)
 		}
 	} else {
 		return nil, err

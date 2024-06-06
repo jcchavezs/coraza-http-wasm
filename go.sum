@@ -1,3 +1,5 @@
+github.com/corazawaf/coraza-coreruleset v0.0.0-20240226094324-415b1017abdc h1:OlJhrgI3I+FLUCTI3JJW8MoqyM78WbqJjecqMnqG+wc=
+github.com/corazawaf/coraza-coreruleset v0.0.0-20240226094324-415b1017abdc/go.mod h1:7rsocqNDkTCira5T0M7buoKR2ehh7YZiPkzxRuAgvVU=
 github.com/corazawaf/coraza-coreruleset/v4 v4.0.0 h1:1jmrC65x7rJwSvxySaWyk84T45PwBvNe7188bfdnTCA=
 github.com/corazawaf/coraza-coreruleset/v4 v4.0.0/go.mod h1:RQMGurig+irQq7v21yq7rM/9SAEf1bT6hCSplJ0ByKY=
 github.com/corazawaf/coraza-wasilibs v0.0.0-20231002095218-9dd6e48f7443 h1:36dTwNjieaDJB/AxPRUHGKCiCn8Bqpu25fb8OdrPemQ=
@@ -14,6 +16,8 @@ github.com/http-wasm/http-wasm-guest-tinygo v0.4.0 h1:sWd1hqOL8LF3DVRPXloVELTQIt
 github.com/http-wasm/http-wasm-guest-tinygo v0.4.0/go.mod h1:zcKr7h/t5ha2ZWIMwV4iOqhfC/qno/tNPYgybVkn/MQ=
 github.com/http-wasm/http-wasm-host-go v0.6.0 h1:Vd4XvcFB3NMgWp2VLCQaiqYgLneN2lChbyN9NGoNDro=
 github.com/http-wasm/http-wasm-host-go v0.6.0/go.mod h1:zQB3w+df4hryDEqBorGyA1DwPJ86LfKIASNLFuj6CuI=
+github.com/jcchavezs/mergefs v0.0.0-20230503083351-07f27d256761 h1:Wbw8wlehLICFiXFPmQjMnYkcC6qH4a0d1iNbp6md+tk=
+github.com/jcchavezs/mergefs v0.0.0-20230503083351-07f27d256761/go.mod h1:BGD4X4tm4ZCbtShoISaG4Ama2L3NOq7y6cvuOxbYgzs=
 github.com/kr/pretty v0.2.0 h1:s5hAObm+yFO5uHYt5dYjxi2rXrsnmRpJx4OYvIWUaQs=
 github.com/kr/pretty v0.2.0/go.mod h1:ipq/a2n7PKx3OHsz4KJII5eveXtPO4qwEXGdVfWzfnI=
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=

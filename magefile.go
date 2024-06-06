@@ -93,7 +93,7 @@ func Test() error {
 
 // E2e runs e2e tests
 func E2e() error {
-	return sh.RunV("go", "test", "-run=^TestE2E", "-tags=e2e", "-v", ".")
+	return sh.RunV("go", "test", "-count=1", "-run=^TestE2E", "-tags=e2e", "-v", ".")
 }
 
 func copy(src, dst string) error {
