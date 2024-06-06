@@ -8,7 +8,9 @@ import (
 	"net/http"
 
 	"github.com/http-wasm/http-wasm-host-go/handler"
+	nethttp "github.com/http-wasm/http-wasm-host-go/handler/nethttp"
 	wasm "github.com/http-wasm/http-wasm-host-go/handler/nethttp"
+	"github.com/tetratelabs/wazero"
 )
 
 //go:embed build/coraza-http-wasm.wasm
@@ -63,4 +65,23 @@ func ExampleMain() {
 	res.Body.Close()
 
 	// Output: 403
+}
+
+func ExampleFS() {
+	moduleConfig := wazero.
+		NewModuleConfig().
+		// Mount the directory as read-only at the root of the guest filesystem.
+		WithFSConfig(wazero.NewFSConfig().WithReadOnlyDirMount("./testdata", "/"))
+
+	mw, err := nethttp.NewMiddleware(context.Background(), []byte(guest),
+		handler.ModuleConfig(moduleConfig),
+		handler.GuestConfig([]byte("{\"directives\": [ \"Include ./directives.conf\", \"Include @crs-setup.conf.example\" ]}")),
+	)
+	if err == nil {
+		mw.Close(context.Background())
+	} else {
+		fmt.Printf("failed to create middleware: %v\n", err)
+	}
+
+	// Output:
 }
