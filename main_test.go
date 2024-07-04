@@ -27,36 +27,37 @@ func (h mockAPIHost) Log(_ api.LogLevel, msg string) {
 
 func TestGetDirectivesFromHost(t *testing.T) {
 	t.Run("empty config", func(t *testing.T) {
-		directives, err := getDirectivesFromHost(mockAPIHost{t: t, getConfig: func() []byte {
+		cfg, err := getConfigFromHost(mockAPIHost{t: t, getConfig: func() []byte {
 			return nil
 		}})
-		require.Empty(t, directives)
+		require.True(t, cfg.includeCRS)
+		require.Empty(t, cfg.directives)
 		require.NoError(t, err)
 	})
 
 	t.Run("invalid JSON", func(t *testing.T) {
-		_, err := getDirectivesFromHost(mockAPIHost{getConfig: func() []byte {
+		_, err := getConfigFromHost(mockAPIHost{getConfig: func() []byte {
 			return []byte("abcd")
 		}})
 		require.ErrorContains(t, err, "invalid host config")
 	})
 
 	t.Run("invalid directives value", func(t *testing.T) {
-		_, err := getDirectivesFromHost(mockAPIHost{getConfig: func() []byte {
+		_, err := getConfigFromHost(mockAPIHost{getConfig: func() []byte {
 			return []byte("{\"directives\": true}")
 		}})
 		require.ErrorContains(t, err, "invalid host config")
 	})
 
 	t.Run("empty directives", func(t *testing.T) {
-		_, err := getDirectivesFromHost(mockAPIHost{getConfig: func() []byte {
+		_, err := getConfigFromHost(mockAPIHost{getConfig: func() []byte {
 			return []byte("{\"directives\": []}")
 		}})
 		require.ErrorContains(t, err, "empty directives")
 	})
 
 	t.Run("valid directives", func(t *testing.T) {
-		directives, err := getDirectivesFromHost(mockAPIHost{getConfig: func() []byte {
+		cfg, err := getConfigFromHost(mockAPIHost{getConfig: func() []byte {
 			return []byte(`
 			{
 				"directives": [
@@ -66,8 +67,9 @@ func TestGetDirectivesFromHost(t *testing.T) {
 			}
 			`)
 		}})
+		require.True(t, cfg.includeCRS)
 		require.NoError(t, err)
-		require.Equal(t, "SecRuleEngine: On\nSecDebugLog /etc/var/logs/coraza.conf", directives)
+		require.Equal(t, "SecRuleEngine: On\nSecDebugLog /etc/var/logs/coraza.conf", cfg.directives)
 	})
 }
 
