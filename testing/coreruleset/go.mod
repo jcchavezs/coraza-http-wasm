@@ -1,6 +1,6 @@
 module github.com/jcchavezs/coraza-http-wasm/testing/coreruleset
 
-go 1.21.0
+go 1.22
 
 require (
 	github.com/bmatcuk/doublestar/v4 v4.6.1

@@ -8,6 +8,9 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strconv"
+	"strings"
 
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
@@ -18,11 +21,84 @@ import (
 var Default = Build
 
 var (
-	golangCILintVer = "v1.56.2" // https://github.com/golangci/golangci-lint/releases
-	gosImportsVer   = "v0.3.8"  // https://github.com/rinchsan/gosimports/releases/tag/v0.3.1
+	minGoVersion     = "1.22"
+	minTinygoVersion = "0.33.0"
+	golangCILintVer  = "v1.61.0" // https://github.com/golangci/golangci-lint/releases
+	gosImportsVer    = "v0.3.8"  // https://github.com/rinchsan/gosimports/releases/tag/v0.3.1
 )
 
 var errCommitFormatting = errors.New("files not formatted, please commit formatting changes")
+
+func init() {
+	for _, check := range []struct {
+		lang       string
+		minVersion string
+	}{
+		{"tinygo", minTinygoVersion},
+		{"go", minGoVersion},
+	} {
+		if err := checkVersion(check.lang, check.minVersion); err != nil {
+			fmt.Printf("Error: %v\n", err)
+			os.Exit(1)
+		}
+	}
+}
+
+// checkVersion checks the minimum version of the specified language is supported.
+// Note: While it is likely, there are no guarantees that a newer version of the language will work
+func checkVersion(lang string, minVersion string) error {
+	var compare []string
+
+	switch lang {
+	case "go":
+		// Version can/cannot include patch version e.g.
+		// - go version go1.19 darwin/arm64
+		// - go version go1.19.2 darwin/amd64
+		goVersionRegex := regexp.MustCompile("go([0-9]+).([0-9]+).?([0-9]+)?")
+		v, err := sh.Output("go", "version")
+		if err != nil {
+			return fmt.Errorf("unexpected go error: %v", err)
+		}
+		compare = goVersionRegex.FindStringSubmatch(v)
+		if len(compare) != 4 {
+			return fmt.Errorf("unexpected go semver: %q", v)
+		}
+	case "tinygo":
+		tinygoVersionRegex := regexp.MustCompile("tinygo version ([0-9]+).([0-9]+).?([0-9]+)?")
+		v, err := sh.Output("tinygo", "version")
+		if err != nil {
+			return fmt.Errorf("unexpected tinygo error: %v", err)
+		}
+		// Assume a dev build is valid.
+		if strings.Contains(v, "-dev") {
+			return nil
+		}
+		compare = tinygoVersionRegex.FindStringSubmatch(v)
+		if len(compare) != 4 {
+			return fmt.Errorf("unexpected tinygo semver: %q", v)
+		}
+	default:
+		return fmt.Errorf("unexpected language: %s", lang)
+	}
+
+	compare = compare[1:]
+	if compare[2] == "" {
+		compare[2] = "0"
+	}
+
+	base := strings.SplitN(minVersion, ".", 3)
+	if len(base) == 2 {
+		base = append(base, "0")
+	}
+	for i := 0; i < 3; i++ {
+		baseN, _ := strconv.Atoi(base[i])
+		compareN, _ := strconv.Atoi(compare[i])
+		if baseN > compareN {
+			return fmt.Errorf("unexpected %s version, minimum want %q, have %q", lang, minVersion, strings.Join(compare, "."))
+		}
+	}
+	return nil
+}
 
 // Format formats code in this repository.
 func Format() error {
