@@ -13,8 +13,8 @@ github.com/foxcpp/go-mockdns v1.1.0 h1:jI0rD8M0wuYAxL7r/ynTrCQQq0BVqfB99Vgk7Dlme
 github.com/foxcpp/go-mockdns v1.1.0/go.mod h1:IhLeSFGed3mJIAXPH2aiRQB+kqz7oqu8ld2qVbOu7Wk=
 github.com/http-wasm/http-wasm-guest-tinygo v0.4.0 h1:sWd1hqOL8LF3DVRPXloVELTQItibKtDCtVSA4UfMf4Y=
 github.com/http-wasm/http-wasm-guest-tinygo v0.4.0/go.mod h1:zcKr7h/t5ha2ZWIMwV4iOqhfC/qno/tNPYgybVkn/MQ=
-github.com/http-wasm/http-wasm-host-go v0.6.0 h1:Vd4XvcFB3NMgWp2VLCQaiqYgLneN2lChbyN9NGoNDro=
-github.com/http-wasm/http-wasm-host-go v0.6.0/go.mod h1:zQB3w+df4hryDEqBorGyA1DwPJ86LfKIASNLFuj6CuI=
+github.com/http-wasm/http-wasm-host-go v0.7.0 h1:+1KrRyOO6tWiDB24QrtSYyDmzFLBBs3jioKaUT0mq1c=
+github.com/http-wasm/http-wasm-host-go v0.7.0/go.mod h1:adXKcLmL7yuavH/e0kBAp7b3TgAHTo/enCduyN5bXGM=
 github.com/jcchavezs/mergefs v0.0.0-20230503083351-07f27d256761 h1:Wbw8wlehLICFiXFPmQjMnYkcC6qH4a0d1iNbp6md+tk=
 github.com/jcchavezs/mergefs v0.0.0-20230503083351-07f27d256761/go.mod h1:BGD4X4tm4ZCbtShoISaG4Ama2L3NOq7y6cvuOxbYgzs=
 github.com/kr/pretty v0.2.0 h1:s5hAObm+yFO5uHYt5dYjxi2rXrsnmRpJx4OYvIWUaQs=
@@ -42,10 +42,8 @@ github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcU
 github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
 github.com/tetratelabs/wabin v0.0.0-20230304001439-f6f874872834 h1:ZF+QBjOI+tILZjBaFj3HgFonKXUcwgJ4djLb6i42S3Q=
 github.com/tetratelabs/wabin v0.0.0-20230304001439-f6f874872834/go.mod h1:m9ymHTgNSEjuxvw8E7WWe4Pl4hZQHXONY8wE6dMLaRk=
-github.com/tetratelabs/wazero v1.6.0 h1:z0H1iikCdP8t+q341xqepY4EWvHEw8Es7tlqiVzlP3g=
-github.com/tetratelabs/wazero v1.6.0/go.mod h1:0U0G41+ochRKoPKCJlh0jMg1CHkyfK8kDqiirMmKY8A=
-github.com/tetratelabs/wazero v1.7.2 h1:1+z5nXJNwMLPAWaTePFi49SSTL0IMx/i3Fg8Yc25GDc=
-github.com/tetratelabs/wazero v1.7.2/go.mod h1:ytl6Zuh20R/eROuyDaGPkp82O9C/DJfXAwJfQ3X6/7Y=
+github.com/tetratelabs/wazero v1.8.0 h1:iEKu0d4c2Pd+QSRieYbnQC9yiFlMS9D+Jr0LsRmcF4g=
+github.com/tetratelabs/wazero v1.8.0/go.mod h1:yAI0XTsMBhREkM/YDAK/zNou3GoiAce1P6+rp/wQhjs=
 github.com/tidwall/gjson v1.17.1 h1:wlYEnwqAHgzmhNUFfw7Xalt2JzQvsMx2Se4PcoFCT/U=
 github.com/tidwall/gjson v1.17.1/go.mod h1:/wbyibRr2FHMks5tjHJ5F8dMZh3AcwJEMf5vlfC0lxk=
 github.com/tidwall/match v1.1.1 h1:+Ho715JplO36QYgwN9PGYNhgZvoUSc9X2c80KVTi+GA=
@@ -59,8 +57,6 @@ github.com/wasilibs/go-libinjection v0.4.0 h1:dr1Y/kM/gmoA7eSfdf+CvCcmzwsz2jVYjN
 github.com/wasilibs/go-libinjection v0.4.0/go.mod h1:zD7fNXKSaTKoSTmrfuP9Gc16alNEgwkZaHIeDDk3WWM=
 github.com/wasilibs/go-re2 v1.4.0 h1:Jp6BM8G/zajgY1BCQUm3i7oGMdR1gA5EBv87wGd2ysc=
 github.com/wasilibs/go-re2 v1.4.0/go.mod h1:hLzlKjEgON+17hWjikLx8hJBkikyjQH/lsqCy9t6tIY=
-github.com/wasilibs/nottinygc v0.4.0 h1:h1TJMihMC4neN6Zq+WKpLxgd9xCFMw7O9ETLwY2exJQ=
-github.com/wasilibs/nottinygc v0.4.0/go.mod h1:oDcIotskuYNMpqMF23l7Z8uzD4TC0WXHK8jetlB3HIo=
 github.com/wasilibs/nottinygc v0.7.1 h1:rKu19+SFniRNuSo5NX7/wxpSpXmMUmkcyt/YiWLJg8w=
 github.com/wasilibs/nottinygc v0.7.1/go.mod h1:oDcIotskuYNMpqMF23l7Z8uzD4TC0WXHK8jetlB3HIo=
 golang.org/x/mod v0.14.0 h1:dGoOF9QVLYng8IHTm7BAyWqCqSheQ5pYWGhzW00YJr0=
