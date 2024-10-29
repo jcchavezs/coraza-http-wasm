@@ -139,12 +139,20 @@ func initializeWAF(host api.Host) (coraza.WAF, error) {
 	if cfg, err := getConfigFromHost(host); err == nil {
 		if cfg.includeCRS {
 			wafConfig = wafConfig.WithRootFS(mergefs.Merge(coreruleset.FS, fsio.OSFS))
+		} else {
+			wafConfig = wafConfig.WithRootFS(fsio.OSFS)
 		}
 
 		if cfg.directives == "" {
 			host.Log(api.LogLevelWarn, "Initializing WAF with no directives")
 		} else {
-			host.Log(api.LogLevelDebug, "Initializing WAF with directives:\n"+cfg.directives)
+			if host.LogEnabled(api.LogLevelDebug) {
+				if cfg.includeCRS {
+					host.Log(api.LogLevelDebug, "Initializing WAF with CRS embedded and directives:\n"+cfg.directives)
+				} else {
+					host.Log(api.LogLevelDebug, "Initializing WAF with directives:\n"+cfg.directives)
+				}
+			}
 			wafConfig = wafConfig.WithDirectives(cfg.directives)
 		}
 	} else {
