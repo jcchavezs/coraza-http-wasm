@@ -1,6 +1,6 @@
 module github.com/corazawaf/coraza-http-wasm
 
-go 1.22
+go 1.23
 
 require (
 	github.com/corazawaf/coraza-coreruleset/v4 v4.0.0
